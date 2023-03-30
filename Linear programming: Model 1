@@ -1,3 +1,5 @@
+# Problem taken from sergio correa (youtube)
+
 #Initialize Model
 model = Model("Model 1")
 
