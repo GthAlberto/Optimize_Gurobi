@@ -1,0 +1,35 @@
+#Initialize Model
+model = Model("Model 1")
+
+#Decition Variables
+xe = model.addVar(vtype = GRB.CONTINUOUS, name ='xe')
+xi = model.addVar(vtype = GRB.CONTINUOUS, name ='xi')
+
+#Objective Function
+model.setObjective(3+xe+2*xi,GRB.MAXIMIZE)
+
+#Restrictions
+model.addConstr(xe+2*xi<=6)
+model.addConstr(2*xe+xi<=8)
+model.addConstr(-xe+xi<=1)
+model.addConstr(xi<=2)
+
+#Save the problem to a file
+model.write('Model 1.rlp')
+
+#Show the model
+model.display()
+
+#Optimize the model
+model.optimize()
+
+#Objective function value
+model.ObjVal
+
+#Variables value
+model.getVars()
+
+#Print the values
+print('Objetive funtion: ',str(round(model.ObjVal,2)))
+for v in model.getVars():
+    print(str(v.varName)+"="+str(round(v.x,2)))
