@@ -1,20 +1,19 @@
-# Problem taken from sergio correa (youtube)
 
 #Initialize Model
 model = Model("Model 1")
 
 #Decition Variables
-xe = model.addVar(vtype = GRB.CONTINUOUS, name ='xe')
-xi = model.addVar(vtype = GRB.CONTINUOUS, name ='xi')
+x1 = model.addVar(vtype = GRB.CONTINUOUS, name ='x1')
+x2 = model.addVar(vtype = GRB.CONTINUOUS, name ='x2')
 
 #Objective Function
-model.setObjective(3+xe+2*xi,GRB.MAXIMIZE)
+model.setObjective(20*xe+20*xi,GRB.MAXIMIZE)
 
 #Restrictions
-model.addConstr(xe+2*xi<=6)
-model.addConstr(2*xe+xi<=8)
-model.addConstr(-xe+xi<=1)
-model.addConstr(xi<=2)
+model.addConstr(2*x1+6*x2<=600)
+model.addConstr(6*x1+x2<=800)
+model.addConstr(-x1+x2<=100)
+model.addConstr(x2<=200)
 
 #Save the problem to a file
 model.write('Model 1.rlp')
