@@ -1,0 +1,41 @@
+# Sets
+partes = [1,2,3]
+maquina = [1,2]
+
+# Problem taken from sergio correa (youtube)
+
+# Arcos
+arcos = [(i,j) for i in partes for j in maquina]
+arcos
+
+tiempos = {(1,1):0.02,(1,2):0.05,(2,1):0.03,(2,2):0.02,(3,1):0.05,(3,2):0.04}
+utilidad = {1:300,2:250,3:200}
+
+# Import gurobi
+from gurobipy import *
+
+# Model
+m = Model('Modelo')
+
+# Variables
+x = m.addVars(arcos,vtype=GRB.CONTINUOUS, name='x')
+
+# Objetive funtion
+m.setObjective(quicksum(utilidad[i]*x[i,j] for i in partes for j in maquina),GRB.MAXIMIZE)
+
+# Restrictions
+m.addConstrs(quicksum(tiempos[i,j]*x[i,j] for i in partes)<=40 for j in maquina)
+
+# Show the model
+m.display
+
+# Optimize
+m.optimize()
+
+#Print the values
+print('Objetive funtion: ',str(round(m.ObjVal,2)))
+for v in m.getVars():
+    print(str(v.varName)+"="+str(round(v.x,2)))
+    
+#Save the problem to a file
+model.write('Produccion 1.produccion puertas y ventanas.rlp')
