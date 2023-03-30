@@ -1,0 +1,55 @@
+# Reporte de sensibilidad (todo los codigos juntos)
+print("*********************************")
+print("**** ANALISIS DE SENSIBILIDAD ***")
+print("*********************************")
+print()
+# Creo el modelo
+model = Model('model')
+
+# Variables del modelo
+xt = model.addVar(vtype = GRB.CONTINUOUS, name = 'xt') 
+xa = model.addVar(vtype = GRB.CONTINUOUS, name = 'xa') 
+xg = model.addVar(vtype = GRB.CONTINUOUS, name = 'xg') 
+ca = model.addVar(vtype = GRB.CONTINUOUS, name = 'ca') 
+va = model.addVar(vtype = GRB.CONTINUOUS, name = 'va') 
+
+# Función objetivo
+model.setObjective(450*xg+120*xt+22*va+28*xa-28*ca, GRB.MAXIMIZE)
+
+#  Problem from the Sergio Correa Youtube
+
+# Restricciones del modelo
+model.addConstr(xt+xa+0.1*xg<=800)
+model.addConstr(2*xt+3*xa+0.05*xg<=1000)
+model.addConstr(4*xa+ca-5*xg-va==0)
+
+# Optimizo el modelo 
+model.optimize()
+print()
+print('Model state')
+print('model state: '+str(model.status)+ '  |2 = there is solution |4 = there is no solution |')
+print()
+print('Objetive funtion value')
+print('Objetive funtion value: '+str(model.ObjVal))
+for v in model.getVars():
+    print(str(v.varName)+': '+str(v.x))
+print()
+# Holguras
+print('Slack')
+for r in model.getConstrs():
+    print(str(r)[-3:-1]+':Slack '+str(r.slack))
+print()
+print('Dual price')
+# Precios duales
+for r in model.getConstrs():
+    print(str(r)[-3:-1]+':Dual price '+str(r.pi))
+print()
+print('Sensibility of the coefficients of the objetive funtion')
+# Sensibiidad de los coeficientes de la función objetivo:
+for v in model.getVars():
+    print(str(v.varName)+' Lower sensitivity: '+str(v.SAObjLow)+' |Superior sensitivity: '+str(v.SAObjUp))
+print()
+print('Right sided tenderness')
+# Sebsibilidad del lado derecho (restricciones)
+for r in model.getConstrs():
+    print(str(r)[-3:-1]+':la derecho '+str(r.RHS)+' intervalos: ['+str(r.SARHSLow)+' - '+str(r.SARHSUp)+']')
